@@ -1,5 +1,6 @@
 package com.example.conversation_app
 
+import SampleData
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -40,7 +41,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            TopAppConversationBar()
+            PreviewConversation()
         }
     }
 }
@@ -48,7 +49,54 @@ class MainActivity : ComponentActivity() {
 data class Message(val author: String, val body: String)
 
 @Composable
-fun MessageCard(message: Message){
+fun RightMessageCard(message: Message){
+    val isExpanded by remember {
+        mutableStateOf(false)
+    }
+    val surfaceColor by animateColorAsState(
+        targetValue = if (isExpanded) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surface,
+        label = ""
+    )
+    Row {
+        Column(
+            horizontalAlignment = Alignment.End
+        ) {
+            Text(
+                text = message.author,
+                color = MaterialTheme.colorScheme.secondary,
+                style = MaterialTheme.typography.titleSmall,
+
+            )
+
+            Surface(
+                shape = MaterialTheme.shapes.medium,
+                shadowElevation = 1.dp,
+                color = surfaceColor,
+            ) {
+                Text(
+                    text = message.body,
+                    modifier = Modifier.padding(all = 4.dp),
+                    style = MaterialTheme.typography.bodyMedium
+                )
+            }
+        }
+
+        Spacer(modifier = Modifier.width(8.dp))
+
+        Image(
+            painter = painterResource(id = R.drawable.ic_launcher_background),
+            contentDescription = "Profile Picture",
+            modifier = Modifier
+                .size(40.dp)
+                .clip(CircleShape)
+                .border(1.5.dp, MaterialTheme.colorScheme.primary, CircleShape)
+        )
+
+    }
+}
+
+@Composable
+fun LeftMessageCard(message: Message){
     Row {
         Image(
             painter = painterResource(id = R.drawable.ic_launcher_background),
@@ -97,9 +145,16 @@ fun MessageCard(message: Message){
 
 @Preview
 @Composable
-fun PreviewMessageCard(){
-    MessageCard(Message("Alexandru Constantin", "Cf, iesi?"))
+fun PreviewLeftMessageCard(){
+    LeftMessageCard(Message("Valentin Ungureanu", "Cf, iesi?"))
 }
+
+@Preview
+@Composable
+fun PreviewRightMessageCard(){
+    RightMessageCard(Message("Alexandru Constantin", "Da."))
+}
+
 
 data class Acount (val username: String, val activity: String)
 
@@ -111,7 +166,7 @@ fun TopAppConversationBar(){
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(all = 32.dp),
+            .padding(start = 4.dp, top = 24.dp, bottom = 4.dp),
         verticalAlignment = Alignment.CenterVertically
     ){
         BackButton { }
@@ -159,11 +214,40 @@ fun BackButton(onClick: () -> Unit){
 
 @Composable
 fun Conversation(messages: List<Message>){
-    LazyColumn {
-        items(messages){
-            message -> MessageCard(message)
+    Column{
+
+        LazyColumn(
+            modifier = Modifier.padding(start = 12
+                .dp)
+        ) {
+            items(messages){
+                    message -> LeftMessageCard(message)
+            }
         }
+
+
+        LazyColumn(
+            horizontalAlignment = Alignment.End
+        ) {
+            items(messages){
+                    message -> RightMessageCard(message)
+            }
+        }
+
+
     }
+
+}
+
+@Preview
+@Composable
+fun PreviewConversation(){
+    Column{
+        TopAppConversationBar()
+        //Spacer(Modifier.width(16.dp))
+        Conversation(SampleData.conversationSample)
+    }
+
 }
 
 
