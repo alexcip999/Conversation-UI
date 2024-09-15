@@ -19,12 +19,20 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -39,7 +47,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            PreviewConversation()
+            ConversationUI()
         }
     }
 }
@@ -183,6 +191,20 @@ fun BackButton(onClick: () -> Unit){
 }
 
 @Composable
+fun SentButton(onClick: () -> Unit){
+    Button(
+        onClick = {
+            onClick()
+        },
+        colors = ButtonDefaults.buttonColors()
+    ){
+        Text(
+            text = ">"
+        )
+    }
+}
+
+@Composable
 fun Conversation(messages: List<Message>){
     LazyColumn {
         items(messages){
@@ -196,13 +218,44 @@ fun Conversation(messages: List<Message>){
     }
 }
 
+
+@Composable
+fun SimpleOutlinedTextFieldSample() {
+    var text by remember { mutableStateOf("") }
+
+    OutlinedTextField(
+        value = text,
+        onValueChange = { text = it },
+        label = { Text("Label") }
+    )
+}
+
 @Preview
 @Composable
-fun PreviewConversation(){
-    Column{
+fun PreviewOutlinedTextFieldSample(){
+    var text by remember { mutableStateOf("") }
+
+    OutlinedTextField(
+        value = text,
+        onValueChange = {text = it},
+        label = {Text("Label")}
+    )
+}
+
+@Preview(showBackground = true)
+@Composable
+fun BottomConversationAppBar(){
+
+}
+
+@Preview(showBackground = true)
+@Composable
+fun ConversationUI(){
+    Column {
         TopAppConversationBar()
-        //Spacer(Modifier.width(16.dp))
         Conversation(SampleData.conversationSample)
+        // possible a spacer between Conversation and bottom bar
+        BottomConversationAppBar()
     }
 
 }
