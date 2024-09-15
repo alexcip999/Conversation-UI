@@ -1,14 +1,14 @@
 package com.example.conversation_app
 
-import SampleData
+import com.example.conversation_app.ui.theme.SampleData
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -25,13 +25,11 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
@@ -50,14 +48,10 @@ data class Message(val author: String, val body: String)
 
 @Composable
 fun RightMessageCard(message: Message){
-    val isExpanded by remember {
-        mutableStateOf(false)
-    }
-    val surfaceColor by animateColorAsState(
-        targetValue = if (isExpanded) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surface,
-        label = ""
-    )
-    Row {
+    Row(
+        horizontalArrangement = Arrangement.Absolute.Right,
+        modifier = Modifier.fillMaxWidth()
+    ) {
         Column(
             horizontalAlignment = Alignment.End
         ) {
@@ -71,27 +65,14 @@ fun RightMessageCard(message: Message){
             Surface(
                 shape = MaterialTheme.shapes.medium,
                 shadowElevation = 1.dp,
-                color = surfaceColor,
             ) {
                 Text(
                     text = message.body,
                     modifier = Modifier.padding(all = 4.dp),
-                    style = MaterialTheme.typography.bodyMedium
+                    textAlign = TextAlign.Left
                 )
             }
         }
-
-        Spacer(modifier = Modifier.width(8.dp))
-
-        Image(
-            painter = painterResource(id = R.drawable.ic_launcher_background),
-            contentDescription = "Profile Picture",
-            modifier = Modifier
-                .size(40.dp)
-                .clip(CircleShape)
-                .border(1.5.dp, MaterialTheme.colorScheme.primary, CircleShape)
-        )
-
     }
 }
 
@@ -108,15 +89,6 @@ fun LeftMessageCard(message: Message){
         )
 
         Spacer(modifier = Modifier.width(8.dp))
-
-        val isExpanded by remember {
-            mutableStateOf(false)
-        }
-        val surfaceColor by animateColorAsState(
-            targetValue = if (isExpanded) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surface,
-            label = ""
-        )
-
         Column {
             Text(
                 text = message.author,
@@ -129,13 +101,11 @@ fun LeftMessageCard(message: Message){
             Surface(
                 shape = MaterialTheme.shapes.medium,
                 shadowElevation = 1.dp,
-                color = surfaceColor,
                 modifier = Modifier.animateContentSize().padding(1.dp)
             ) {
                 Text(
                     text = message.body,
                     modifier = Modifier.padding(all = 4.dp),
-                    maxLines = if (isExpanded) Int.MAX_VALUE else 1,
                     style = MaterialTheme.typography.bodyMedium
                 )
             }
@@ -214,29 +184,16 @@ fun BackButton(onClick: () -> Unit){
 
 @Composable
 fun Conversation(messages: List<Message>){
-    Column{
-
-        LazyColumn(
-            modifier = Modifier.padding(start = 12
-                .dp)
-        ) {
-            items(messages){
-                    message -> LeftMessageCard(message)
-            }
+    LazyColumn {
+        items(messages){
+            message ->
+                if(message.author == "Alex"){
+                    RightMessageCard(message)
+                }else{
+                    LeftMessageCard(message)
+                }
         }
-
-
-        LazyColumn(
-            horizontalAlignment = Alignment.End
-        ) {
-            items(messages){
-                    message -> RightMessageCard(message)
-            }
-        }
-
-
     }
-
 }
 
 @Preview
