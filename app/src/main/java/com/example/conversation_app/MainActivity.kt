@@ -19,20 +19,12 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -123,14 +115,14 @@ fun LeftMessageCard(message: Message){
 
 @Preview
 @Composable
-fun PreviewLeftMessageCard(){
-    LeftMessageCard(Message("Valentin Ungureanu", "Cf, iesi?"))
+fun previewLeftMessageCard(){
+    LeftMessageCard(Message("User1", "Hi!"))
 }
 
 @Preview
 @Composable
-fun PreviewRightMessageCard(){
-    RightMessageCard(Message("Alexandru Constantin", "Da."))
+fun previewRightMessageCard(){
+    RightMessageCard(Message("User2", "Hello!"))
 }
 
 
@@ -139,7 +131,6 @@ data class Acount (val username: String, val activity: String)
 @Preview(showBackground = true)
 @Composable
 fun TopAppConversationBar(){
-    //var onClick: () -> Unit = {}
     val user = Acount("Username", "activity")
     Row(
         modifier = Modifier
@@ -157,7 +148,7 @@ fun TopAppConversationBar(){
             modifier = Modifier
                 .size(40.dp)
                 .clip(CircleShape)
-                .border(1.5.dp, MaterialTheme.colorScheme.primary, CircleShape),
+                .border(1.5.dp, MaterialTheme.colorScheme.secondary, CircleShape),
         )
 
         Spacer(modifier = Modifier.width(8.dp))
@@ -191,20 +182,6 @@ fun BackButton(onClick: () -> Unit){
 }
 
 @Composable
-fun SentButton(onClick: () -> Unit){
-    Button(
-        onClick = {
-            onClick()
-        },
-        colors = ButtonDefaults.buttonColors()
-    ){
-        Text(
-            text = ">"
-        )
-    }
-}
-
-@Composable
 fun Conversation(messages: List<Message>){
     LazyColumn {
         items(messages){
@@ -219,46 +196,16 @@ fun Conversation(messages: List<Message>){
 }
 
 
-@Composable
-fun SimpleOutlinedTextFieldSample() {
-    var text by remember { mutableStateOf("") }
-
-    OutlinedTextField(
-        value = text,
-        onValueChange = { text = it },
-        label = { Text("Label") }
-    )
-}
-
-@Preview
-@Composable
-fun PreviewOutlinedTextFieldSample(){
-    var text by remember { mutableStateOf("") }
-
-    OutlinedTextField(
-        value = text,
-        onValueChange = {text = it},
-        label = {Text("Label")}
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun BottomConversationAppBar(){
-
-}
-
 @Preview(showBackground = true)
 @Composable
 fun ConversationUI(){
     Column {
         TopAppConversationBar()
         Conversation(SampleData.conversationSample)
-        // possible a spacer between Conversation and bottom bar
-        BottomConversationAppBar()
     }
 
 }
+
 
 
 
